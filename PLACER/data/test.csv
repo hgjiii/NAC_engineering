@@ -1,0 +1,2 @@
+label,date,method,resolution,protein,nucleic,nonpoly,num_heavy,coverage,sequence,hash,cluster,degree
+133d,1993-07-29,X-RAY_DIFFRACTION,1.8,[],"['A', 'B']",[],250,0.968,[],[],27,0

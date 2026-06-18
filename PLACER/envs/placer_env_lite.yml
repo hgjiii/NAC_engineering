@@ -1,0 +1,29 @@
+name: placer_env
+channels:
+  - pytorch
+  - conda-forge
+  - dglteam/label/th23_cu121
+  - nvidia/label/cuda-12.1.0
+  - nodefaults
+dependencies:
+  - python=3.10
+  - cuda-toolkit[channel=nvidia/label/cuda-12.1.0]
+  - pytorch[channel=pytorch, version=2.3.1, build=*cuda12.1*]
+  - pytorch-cuda[channel=pytorch, version=12.1]
+  - pytorch::torchvision
+  - pytorch::torchaudio
+  - dgl=2.4.0
+  - opt_einsum=3.4.0
+  - openbabel=3.1.1
+  - networkx=3.4.2
+  - matplotlib
+  - numpy=2.2.1
+  - pandas=2.2.3
+  - e3nn=0.5.4
+  - pip
+  - ipython
+  - ipykernel
+  - jupyterlab
+  - notebook
+  - pip:
+    - se3-transformer @ git+https://github.com/NVIDIA/DeepLearningExamples.git#subdirectory=DGLPyTorch/DrugDiscovery/SE3Transformer
