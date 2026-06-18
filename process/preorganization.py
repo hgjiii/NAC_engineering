@@ -1,10 +1,9 @@
 import warnings
 import numpy as np
 from Bio import BiopythonWarning
-from Bio.PDB import PDBParser
 
-from placer.process.structure import BACKBONE_ATOMS, get_coord
-from placer.process.rotamer import (
+from process.structure import BACKBONE_ATOMS, get_coord
+from process.rotamer import (
     CHI_ATOMS, classify_rotamer_bin, get_chi_angles,
 )
 
@@ -252,4 +251,53 @@ def analyze_preorganization_rotamer(models, key_residues, lock_threshold=0.7, ve
         "entropy_norm": entropy_norm,
         "dominant_occupancy": dominant_occupancy,
         "fraction_locked": fraction_locked,
+    }
+
+
+def analyze_preorganization_cat(holo_models, apo_models, key_res_cat,
+                                nac_holo_idxs, apo_prmsd_list, max_buffer=2.0):
+    """
+    Description:
+        Match apo models to the holo NAC ensemble by catalytic-residue rotamer
+        labels. An apo model counts if, at every catalytic residue, its rotamer
+        label is among those seen in holo NAC models. Restricted to confident
+        apo models (pRMSD <= max_buffer).
+
+    Args:
+        holo_models: List of holo Bio.PDB Models.
+        apo_models: List of apo Bio.PDB Models.
+        key_res_cat: Catalytic key-residue dicts (chain/resid/resname).
+        nac_holo_idxs: 0-based indices of holo NAC models.
+        apo_prmsd_list: Per-model apo pRMSD values.
+        max_buffer: pRMSD threshold for confident apo models.
+
+    Returns:
+        Dict with nac_apo_idxs (0-based list) and nac_fraction_apo (scalar over
+        all apo models).
+    """
+    conf_mask = np.array(apo_prmsd_list) <= max_buffer
+
+    # Reference rotamer-label set per catalytic residue from holo NAC models
+    nac_ref_labels = {}
+    for kr in key_res_cat:
+        labels, _ = get_residue_rotamer_labels(holo_models, kr)
+        nac_labels = [labels[i] for i in nac_holo_idxs]
+        if nac_labels:
+            nac_ref_labels[(kr["chain"], kr["resid"])] = set(nac_labels)
+
+    nac_apo_idxs = []
+    if nac_ref_labels:
+        apo_labels = {(kr["chain"], kr["resid"]): get_residue_rotamer_labels(apo_models, kr)[0]
+                      for kr in key_res_cat if (kr["chain"], kr["resid"]) in nac_ref_labels}
+        for i in range(len(apo_models)):
+            if not conf_mask[i]:
+                continue
+            if all(i < len(apo_labels[k]) and apo_labels[k][i] in ref_set
+                   for k, ref_set in nac_ref_labels.items()):
+                nac_apo_idxs.append(i)
+
+    return {
+        "nac_apo_idxs": nac_apo_idxs,
+        "nac_fraction_apo": len(nac_apo_idxs) / len(apo_models),
+        "n_confident_apo": int(conf_mask.sum()),
     }

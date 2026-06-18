@@ -1,9 +1,8 @@
 import warnings
 import numpy as np
 from Bio import BiopythonWarning
-from Bio.PDB import PDBParser
 
-from placer.process.structure import BACKBONE_ATOMS, get_coord
+from process.structure import BACKBONE_ATOMS, get_coord
 
 warnings.simplefilter("ignore", BiopythonWarning)
 

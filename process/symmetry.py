@@ -1,6 +1,6 @@
 import numpy as np
 
-from placer.process import structure
+from process import structure
 
 
 ADIPIC_ACID_SYM = [("C1","C2"), ("C2","C1"),("C3","C5"), ("C5","C3"),("C4","C6"), 
@@ -93,3 +93,32 @@ def select_apa_reactive_carboxyl(ligands, atp_atom_names):
         dists.append(np.linalg.norm(center - atp_center))
 
     return groups[int(np.argmin(dists))]
+
+
+def resolve_symmetric_atom(ligand, atom_name, partner_xyz, sym_pairs=None):
+    """
+    Description:
+        Pick the symmetry-equivalent atom of a ligand closer to partner_xyz.
+
+    Args:
+        ligand: Ligand dict from structure.get_ligand_heavy_coords.
+        atom_name: Requested ligand atom name.
+        partner_xyz: Reference 3D point.
+        sym_pairs: List of (atom_name, atom_name) swap tuples; None disables.
+
+    Returns:
+        Effective atom name closer to partner_xyz, or input atom_name unchanged.
+    """
+    if sym_pairs is None:
+        return atom_name
+    candidates = {atom_name} | {b for a, b in sym_pairs if a == atom_name}
+    candidates &= set(ligand["atoms"])
+    if len(candidates) <= 1:
+        return atom_name
+    best_name, best_d = atom_name, np.inf
+    for n in candidates:
+        xyz = ligand["coords"][ligand["atoms"].index(n)]
+        d = np.linalg.norm(xyz - partner_xyz)
+        if d < best_d:
+            best_d, best_name = d, n
+    return best_name

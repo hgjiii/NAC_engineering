@@ -1,14 +1,9 @@
-import os
 import argparse
 
 import pyrosettacolabsetup; pyrosettacolabsetup.install_pyrosetta()
 import pyrosetta
 
 from pyrosetta import * 
-
-from pyrosetta.rosetta.protocols.relax import FastRelax
-from pyrosetta.toolbox import cleanATOM
-
 
 def load_ligand_params(params):
     if params:
@@ -34,22 +29,6 @@ def get_relax_pdb(input_pdb, output_dir):
     testPose.assign(pose)
     print(testPose)
     
-    # relax = FastRelax()
-    # # # scorefxn = get_score_function()
-    # scorefxn = get_fa_scorefxn()
-    # relax.set_scorefxn(scorefxn)
-    
-    # relax.constrain_relax_to_start_coords(True)
-    
-    # relax.max_iter(100)
-    # print(relax)
-    
-    # if not os.getenv("DEBUG"):
-    #     relax.apply(pose)
-    # pose.dump_pdb(relax_pdb)
-
-    # relax = FastRelax()
-    # scorefxn = get_score_function()
     relax = rosetta.protocols.relax.FastRelax()
     scorefxn = get_fa_scorefxn()
     relax.set_scorefxn(scorefxn)

@@ -3,8 +3,8 @@ import numpy as np
 from scipy.spatial.distance import squareform
 from scipy.cluster.hierarchy import linkage, fcluster
 
-from placer.process import structure
-from placer.process import symmetry
+from process import structure
+from process import symmetry
 
 def build_ligand_ensemble(models):
     """
@@ -80,8 +80,6 @@ def cluster_poses(rmsd_mat, cutoff=2.0, linkage_method="average"):
     return fcluster(Z, t=cutoff, criterion="distance")
 
 
-
-
 def summarize_clusters(labels, rmsd_mat):
     """
     Description:
@@ -115,6 +113,7 @@ def summarize_clusters(labels, rmsd_mat):
         })
     out.sort(key=lambda x: -x["size"])
     return out
+
 
 def analyze_ligand_pose_clusters(models, rmsd_cutoff=2.0, linkage_method="average", symmetric = False):
     """

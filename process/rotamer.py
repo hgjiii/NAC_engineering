@@ -1,6 +1,6 @@
 import numpy as np
 
-from placer.process.structure import get_coord
+from process.structure import get_coord
 
 # Standard residue chi-atom definitions (residue-level convention, IUPAC 2003)
 CHI_ATOMS = {
