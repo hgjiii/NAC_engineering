@@ -115,9 +115,8 @@ def min_dist_to_ligand(coord, lig_coords):
 def find_key_residues(models, ligands_list, cutoff_1=4.0, cutoff_2=None):
     """
     Description:
-        Identify key active-site residues within cutoff A of any ligand heavy atom,
-        across one or more models. With multiple models, results are merged by
-        (chain, resid), keeping the smallest min_sc_dist.
+        Identify active-site residues within a cutoff of any ligand heavy atom,
+        merged across models by smallest sidechain distance.
 
     Args:
         models: A single Bio.PDB Model or a list of Models.

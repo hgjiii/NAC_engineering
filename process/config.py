@@ -41,9 +41,8 @@ def get_pair_label(pair):
 def _expand_symmetry(symmetry):
     """
     Description:
-        Expand per-ligand symmetry edges into full transitive closure. Edges
-        are undirected; all atoms in one connected component become mutually
-        interchangeable.
+        Expand per-ligand symmetry edges into the full transitive closure of
+        mutually interchangeable atoms.
 
     Args:
         symmetry: Dict {ligand: [[atom, atom], ...]} of equivalence edges,

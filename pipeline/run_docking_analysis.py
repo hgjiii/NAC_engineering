@@ -72,7 +72,7 @@ def main():
     search.configure_entrez(ENTREZ_EMAIL)
 
     # Load NAC candidates
-    df_final = pd.read_csv(args.candidates, sep="\t")
+    df_final = pd.read_csv(args.candidates)
 
     # Per entry: docking aggregation + metadata search + sanity check (one pass)
     add = {"affinity_mean": [], "pose_rmsd_mean": [], "taxonomy": [],

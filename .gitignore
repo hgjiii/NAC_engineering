@@ -6,6 +6,13 @@ inputs/
 outputs/
 homologs/structures
 
+# Generated analysis notebooks (keep analysis_homologs.ipynb)
+analysis_docking_results_*.ipynb
+analysis_homologs_*.ipynb
+
+# VSCode
+.vscode/
+.vscode
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks

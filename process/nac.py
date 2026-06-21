@@ -53,9 +53,8 @@ def fill_interaction_pairs(template, resname_to_resid):
 def compute_nac(pair_distances, contact_cutoffs, conf_mask):
     """
     Description:
-        Compute holo NAC statistics from precomputed per-model effective
-        cutoffs: per-contact satisfaction fractions, the joint NAC fraction,
-        and NAC model indices over confident models.
+        Compute holo NAC statistics over confident models: per-contact
+        satisfaction fractions, the joint NAC fraction, and NAC model indices.
 
     Args:
         pair_distances: Dict label -> ndarray of per-model distances.

@@ -17,9 +17,8 @@ warnings.simplefilter("ignore", BiopythonWarning)
 def get_sidechain_coords(model, key_residues):
     """
     Description:
-        Extract sidechain heavy-atom coords for key residues from one model.
-        Missing or Gly-mutated residues are stored as empty arrays to preserve
-        key consistency across models.
+        Extract sidechain heavy-atom coords for key residues in one model;
+        missing or Gly residues become empty arrays to keep keys consistent.
 
     Args:
         model: Bio.PDB Model.
@@ -53,9 +52,8 @@ def get_sidechain_coords(model, key_residues):
 def compute_rmsd(coords_a, coords_b):
     """
     Description:
-        Compute RMSD between sidechain coords of two models across all shared
-        key residues. Residues missing in either model or with mismatched atom
-        count are skipped.
+        Compute sidechain RMSD between two models over their shared key
+        residues, skipping residues missing or with mismatched atom counts.
 
     Args:
         coords_a: Dict from get_sidechain_coords for model A.
@@ -146,9 +144,8 @@ def compute_rotamer_score(labels, k):
 def analyze_preorganization_rmsd(models, key_residues, ref_idx=0, verbose=False):
     """
     Description:
-        RMSD-based preorganization metric. Build the all-vs-all sidechain
-        RMSD matrix over the key-residue set and report the reference-model
-        row as the preorganization indicator.
+        RMSD-based preorganization: build the all-vs-all sidechain RMSD matrix
+        and return the reference-model row as the indicator.
 
     Args:
         models: List of Bio.PDB Models (PLACER ensemble for one state).
@@ -198,9 +195,8 @@ def analyze_preorganization_rmsd(models, key_residues, ref_idx=0, verbose=False)
 def analyze_preorganization_rotamer(models, key_residues, lock_threshold=0.7, verbose=False):
     """
     Description:
-        Rotamer-based preorganization metric. Per-residue rotamer-bin
-        occupancies and entropy aggregated into state-level scores over the
-        given key-residue set.
+        Rotamer-based preorganization: aggregate per-residue rotamer-bin
+        occupancy and entropy into state-level scores.
 
     Args:
         models: List of Bio.PDB Models (PLACER ensemble for one state).
@@ -258,10 +254,8 @@ def analyze_preorganization_cat(holo_models, apo_models, key_res_cat,
                                 nac_holo_idxs, apo_prmsd_list, max_buffer=2.0):
     """
     Description:
-        Match apo models to the holo NAC ensemble by catalytic-residue rotamer
-        labels. An apo model counts if, at every catalytic residue, its rotamer
-        label is among those seen in holo NAC models. Restricted to confident
-        apo models (pRMSD <= max_buffer).
+        Count confident apo models whose catalytic-residue rotamer labels all
+        fall within those seen in the holo NAC ensemble.
 
     Args:
         holo_models: List of holo Bio.PDB Models.

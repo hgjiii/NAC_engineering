@@ -9,9 +9,8 @@ from process import symmetry
 def build_ligand_ensemble(models):
     """
     Description:
-        Concatenate heavy-atom coordinates of all ligands per model into a
-        single tensor, treating multi-ligand systems as one composite pose.
-        Assumes a shared backbone frame (PLACER output), so no alignment.
+        Stack each model's ligand heavy-atom coords into one composite-pose
+        tensor, assuming a shared PLACER backbone frame (no alignment).
 
     Args:
         models: List of Bio.PDB Models, one per PLACER conformation.

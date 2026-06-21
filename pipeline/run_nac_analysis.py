@@ -201,7 +201,7 @@ def main():
     else:
         columns = [c for c in OUTPUT_COLUMNS if c not in APO_COLUMNS]
 
-    df[columns].to_csv(args.output, index=False)
+    df[columns].to_csv(args.output, index=False, sep = ',')
 
 if __name__ == "__main__":
     main()
