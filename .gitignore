@@ -11,6 +11,9 @@ homologs/structure_afdb/
 homologs/structure_modeller/
 modeller/structure/
 
+# Vendored tool (PLACER: nested git repo disabled)
+PLACER/.git_disabled/
+
 # Generated analysis notebooks (keep analysis_homologs.ipynb)
 analysis_docking_results_*.ipynb
 analysis_homologs_*.ipynb
