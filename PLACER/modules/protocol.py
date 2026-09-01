@@ -5,7 +5,7 @@ import itertools
 import random
 from openbabel import openbabel
 openbabel.obErrorLog.SetOutputLevel(0)
-import PLACER.modules.utils as utils
+import utils
 
 
 # =============================================================================================================

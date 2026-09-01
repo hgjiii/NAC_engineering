@@ -17,16 +17,16 @@ from openbabel import openbabel
 openbabel.obErrorLog.SetOutputLevel(0)
 DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, DIR)
-import PLACER.modules.model as model
-import PLACER.modules.geometry as geometry
-import PLACER.modules.dataloader_pdb as dataloader
-import PLACER.modules.pdbparser as pdbparser
-import PLACER.modules.losses as losses
-import PLACER.modules.cifutils as cifutils
-import PLACER.modules.obutils as obutils
-import PLACER.modules.utils as utils
-import PLACER.modules.protocol as protocol
-from PLACER.modules.placer_input import PLACERinput
+import modules.model as model
+import modules.geometry as geometry
+import modules.dataloader_pdb as dataloader
+import modules.pdbparser as pdbparser
+import modules.losses as losses
+import modules.cifutils as cifutils
+import modules.obutils as obutils
+import modules.utils as utils
+import modules.protocol as protocol
+from modules.placer_input import PLACERinput
 
 
 class PLACER():

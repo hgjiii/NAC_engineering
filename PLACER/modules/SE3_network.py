@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
-import PLACER.modules.init as init
+import init
 from se3_transformer.model import SE3Transformer
 from se3_transformer.model.fiber import Fiber
 

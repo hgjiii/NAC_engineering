@@ -14,15 +14,15 @@ import networkx as nx
 import torch
 
 sys.path.insert(0, os.path.dirname(__file__))
-import PLACER.modules.pdbx as pdbx
+import pdbx
 # print(pdbx.__dir__())
 # import pdbx.reader as reader
 # print(reader.__dir__())
 # import pdbx.reader.PdbxReader
 # import reader.PdbxReader as PdbxReader
 # from PdbxReader import PdbxReader
-from PLACER.modules.pdbx.reader.PdbxReader import PdbxReader
-import PLACER.modules.obutils as obutils
+from pdbx.reader.PdbxReader import PdbxReader
+import obutils
 
 
 # ============================================================

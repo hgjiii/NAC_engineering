@@ -8,7 +8,7 @@ from typing import Dict
 import random
 
 sys.path.append(os.path.dirname(__file__))
-import PLACER.modules.geometry as geometry
+import geometry
 
 
 # ============================================================

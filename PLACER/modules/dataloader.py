@@ -13,8 +13,8 @@ import networkx as nx
 from openbabel import openbabel
 
 sys.path.append(os.path.dirname(__file__))
-import PLACER.modules.cifutils as cifutils
-import PLACER.modules.obutils as obutils
+import cifutils
+import obutils
 
 
 class PDBDataset():

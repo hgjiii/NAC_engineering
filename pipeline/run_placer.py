@@ -4,7 +4,8 @@ import warnings
 warnings.filterwarnings("ignore")
 import argparse
 
-DIR = os.getcwd()
+# DIR = os.getcwd()
+DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(f"{DIR}/PLACER")
 import PLACER
 
@@ -25,7 +26,6 @@ def run_placer(pdb_path: str, lig_path: dict, output_dir: str, iterations: int =
         else:
             pl_inp.ignore_ligand_hydrogens(True)
             # pl_inp.predict_ligand([("Z", "LG0", 1)]) # This is the specific line for only CAR
-            # pl_inp.predict_ligand([("Z", "LG2", 1)]) # This is the specific line for only CAR
             pl_inp.ligand_reference(lig_path)
             
         outputs = placer.run(pl_inp, iterations)

@@ -19,6 +19,7 @@ def extract_entry_id(filename):
     stem = stem.split(".")[0]              # drop ".relax_model" if present
     if stem.endswith("_model"):
         stem = stem[:-len("_model")]       # drop trailing "_model"
+
     return stem
 
 
@@ -34,8 +35,9 @@ def fill_interaction_pairs(template, resname_to_resid):
         resname_to_resid: Dict mapping residue type (e.g. "HIS") to 1-based resid.
 
     Returns:
-        New list of pair dicts with resids filled. Raises KeyError if a needed
-        residue_type is missing from resname_to_resid.
+        New list of pair dicts with resids filled; "residue_type" is kept so
+        the spec can be checked against the model later. Raises KeyError if a
+        needed residue_type is missing from resname_to_resid.
     """
     pairs = []
     for pair_tmpl in template:
@@ -43,8 +45,9 @@ def fill_interaction_pairs(template, resname_to_resid):
         for label, spec in pair_tmpl.items():
             s = dict(spec)
             if "resid" in s and s["resid"] is None:
+                if s["residue_type"] not in resname_to_resid:
+                    raise KeyError(f"No catalytic {s['residue_type']} found for '{label}'.")
                 s["resid"] = resname_to_resid[s["residue_type"]]
-            s.pop("residue_type", None)
             new_pair[label] = s
         pairs.append(new_pair)
     return pairs

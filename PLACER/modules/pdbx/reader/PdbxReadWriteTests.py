@@ -20,9 +20,9 @@ __version__   = "V0.01"
 import sys, unittest, traceback
 import sys, time, os, os.path, shutil
 
-from PLACER.modules.pdbx.reader.PdbxReader import PdbxReader
-from PLACER.modules.pdbx.writer.PdbxWriter import PdbxWriter
-from PLACER.modules.pdbx.reader.PdbxContainers import *
+from pdbx.reader.PdbxReader import PdbxReader
+from pdbx.writer.PdbxWriter import PdbxWriter
+from pdbx.reader.PdbxContainers import *
 
 
 class PdbxReadWriteTests(unittest.TestCase):

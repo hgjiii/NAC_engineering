@@ -15,8 +15,8 @@ Test cases for reading PDBx/mmCIF data files PdbxReader class -
 import sys, unittest, traceback
 import sys, time, os, os.path, shutil
 
-from PLACER.modules.pdbx.reader.PdbxReader import PdbxReader
-from PLACER.modules.pdbx.reader.PdbxContainers import *
+from pdbx.reader.PdbxReader import PdbxReader
+from pdbx.reader.PdbxContainers import *
 
 class PdbxReaderTests(unittest.TestCase):
     def setUp(self):

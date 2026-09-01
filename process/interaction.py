@@ -6,27 +6,41 @@ warnings.simplefilter("ignore", BiopythonWarning)
 
 from process.structure import get_ligand_heavy_coords, get_coord
 
-def build_catalytic_key_res(model, cat_entry, cat_keys, chain_id="A"):
+def build_catalytic_key_res(model, cat_entry, cat_keys, chain_id="A",
+                            interaction_pairs=None):
     """
     Description:
-        Build a key-residue list from a per-entry catalytic mapping, looking up
-        resnames on the model.
+        Build a key-residue list for the catalytic residues, looking up
+        resnames on the model. Resids come from the per-entry catalytic
+        mapping; when no mapping is given (cat_entry is None), they are read
+        from the resids written explicitly in the interaction-pair template.
 
     Args:
         model: Bio.PDB Model used to read resnames.
-        cat_entry: Per-entry catalytic dict, e.g. {"cat_His": {"resid_1based": 294}}.
+        cat_entry: Per-entry catalytic dict, e.g. {"cat_His": {"resid_1based": 294}},
+            or None to take resids from interaction_pairs instead.
         cat_keys: Catalytic keys to include (e.g. ["cat_His", "cat_Thr"]).
         chain_id: Chain identifier where the residues live.
+        interaction_pairs: Interaction pair template, used only when cat_entry
+            is None.
 
     Returns:
-        List of dicts with chain/resid/resname. Residues missing from the
-        model are skipped.
+        List of dicts with chain/resid/resname, deduplicated by resid.
+        Residues missing from the model are skipped.
     """
-    out = []
-    for k in cat_keys:
-        if k not in cat_entry:
+    if cat_entry is not None:
+        resids = [cat_entry[k]["resid_1based"] for k in cat_keys if k in cat_entry]
+    else:
+        resids = [spec["resid"]
+                  for pair in (interaction_pairs or []) for spec in pair.values()
+                  if "ligand" not in spec and spec.get("resid") is not None
+                  and spec.get("chain") == chain_id]
+
+    out, seen = [], set()
+    for resid in resids:
+        if resid in seen:
             continue
-        resid = cat_entry[k]["resid_1based"]
+        seen.add(resid)
         try:
             res = model[chain_id][(" ", resid, " ")]
         except KeyError:
@@ -79,7 +93,14 @@ def _get_atom_xyz(model, spec, sym_pairs=None):
         List of numpy 3-vectors (length >= 1).
     """
     if "ligand" not in spec:
-        res = model[spec["chain"]][(" ", spec["resid"], " ")]
+        try:
+            res = model[spec["chain"]][(" ", spec["resid"], " ")]
+        except KeyError:
+            raise KeyError(f"Residue {spec['chain']}{spec['resid']} not found in model.")
+        resname = res.get_resname().strip()
+        if spec.get("residue_type") not in (None, resname):
+            raise ValueError(f"Residue {spec['chain']}{spec['resid']} is {resname}, "
+                             f"config expects {spec['residue_type']}.")
         atom_map = {a.get_name(): a for a in res.get_atoms()}
         if spec["atom"] not in atom_map:
             raise KeyError(f"Atom {spec['atom']} not found in residue "

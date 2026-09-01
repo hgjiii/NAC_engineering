@@ -9,7 +9,7 @@ import networkx as nx
 from openbabel import openbabel
 
 sys.path.append(os.path.dirname(__file__))
-import PLACER.modules.obutils as obutils
+import obutils
 
 openbabel.OBMessageHandler().SetOutputLevel(0)
 

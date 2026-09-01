@@ -266,8 +266,8 @@ def analyze_preorganization_cat(holo_models, apo_models, key_res_cat,
         max_buffer: pRMSD threshold for confident apo models.
 
     Returns:
-        Dict with nac_apo_idxs (0-based list) and nac_fraction_apo (scalar over
-        all apo models).
+        Dict with nac_apo_idxs (0-based list), nac_fraction_apo (scalar over
+        confident apo models), and n_confident_apo.
     """
     conf_mask = np.array(apo_prmsd_list) <= max_buffer
 
@@ -290,8 +290,10 @@ def analyze_preorganization_cat(holo_models, apo_models, key_res_cat,
                    for k, ref_set in nac_ref_labels.items()):
                 nac_apo_idxs.append(i)
 
+    n_conf_apo = int(conf_mask.sum())
+
     return {
         "nac_apo_idxs": nac_apo_idxs,
-        "nac_fraction_apo": len(nac_apo_idxs) / len(apo_models),
-        "n_confident_apo": int(conf_mask.sum()),
+        "nac_fraction_apo": len(nac_apo_idxs) / n_conf_apo if n_conf_apo else np.nan,
+        "n_confident_apo": n_conf_apo,
     }

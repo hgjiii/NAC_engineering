@@ -1,5 +1,5 @@
 {
-    "enzyme_name": "carA_homologs_100_4",
+    "enzyme_name": "carA_holo_adi_amp_homologs",
     "catalytic": {
         "cat_keys": ["cat_His", "cat_Thr"],
         "chain_id": "A"
@@ -7,37 +7,35 @@
     "interaction_pairs": [
         {
             "His_NE2": {"chain": "A", "resid": null, "atom": "NE2", "residue_type": "HIS"},
-            "ADI_O": {"chain": "Z", "ligand": "ADI", "atom": "O4"}
+            "ADI_C6": {"chain": "Z", "ligand": "ADI", "atom": "C6"}
         },
         {
             "His_NE2": {"chain": "A", "resid": null, "atom": "NE2", "residue_type": "HIS"},
-            "ATP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
         },
         {
             "Thr_OG1": {"chain": "A", "resid": null, "atom": "OG1", "residue_type": "THR"},
-            "ADI_O": {"chain": "Z", "ligand": "ADI", "atom": "O4"}
+            "ADI_C6": {"chain": "Z", "ligand": "ADI", "atom": "C6"}
         },
         {
             "Thr_OG1": {"chain": "A", "resid": null, "atom": "OG1", "residue_type": "THR"},
-            "ATP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
         },
         {
-            "ADI_O": {"chain": "Z", "ligand": "ADI", "atom": "O4"},
-            "ATP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+            "ADI_C6": {"chain": "Z", "ligand": "ADI", "atom": "C6"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
         }
     ],
     "contact_cutoffs": {
-        "His_NE2-ADI_O": 5.1,
-        "His_NE2-ATP_PA": 4.7,
-        "Thr_OG1-ADI_O": 5.2,
-        "Thr_OG1-ATP_PA": 3.9,
-        "ADI_O-ATP_PA": 4.6
+        "His_NE2-ADI_C6": 5.1,
+        "His_NE2-AMP_PA": 4.7,
+        "Thr_OG1-ADI_C6": 5.2,
+        "Thr_OG1-AMP_PA": 3.9,
+        "ADI_C6-AMP_PA": 4.6
     },
     "symmetry_pairs": {
         "ADI": [
-            ["O4", "O3"],
-            ["O4", "O2"],
-            ["O2", "O1"]
+            ["C6", "C4"]
         ]
     }
 }

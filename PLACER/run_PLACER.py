@@ -15,7 +15,7 @@ openbabel.obErrorLog.SetOutputLevel(0)
 
 DIR = os.path.dirname(__file__)
 sys.path.insert(0, DIR)
-import PLACER.PLACER as PLACER
+import PLACER
 
 
 

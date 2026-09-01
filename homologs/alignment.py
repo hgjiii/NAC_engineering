@@ -7,10 +7,9 @@ from Bio.Align import MultipleSeqAlignment
 
 def parse_msa(msa_path):
     """
-    Descriptions:
-        Read a MAFFT-aligned fasta file as a Biopython MultipleSeqAlignment.
-        AlignIO.read enforces equal sequence lengths internally, so no manual
-        sanity check is needed.
+    Description:
+        Read a MAFFT-aligned fasta as a Biopython MultipleSeqAlignment,
+        cleaning each record id to its first token.
 
     Args:
         msa_path: Path to the aligned fasta file.
@@ -31,10 +30,9 @@ def parse_msa(msa_path):
 
 def alignment_as_dict(alignment):
     """
-    Descriptions:
-        Build a {seq_id: aligned_sequence_str} dict for fast id-based access.
-        AlignIO is great at column slicing but awkward at id lookup, so we
-        keep a dict view for per-sequence operations like residue indexing.
+    Description:
+        Build a {seq_id: uppercase aligned sequence} dict for fast id-based
+        access.
 
     Args:
         alignment: Bio.Align.MultipleSeqAlignment.
@@ -47,10 +45,9 @@ def alignment_as_dict(alignment):
 
 def column_conservation(alignment, ignore_gap=True):
     """
-    Descriptions:
+    Description:
         Compute the dominant residue and its frequency for every alignment
-        column. Uses AlignIO column slicing (alignment[:, c]) so the per-
-        column extraction is a single string operation.
+        column.
 
     Args:
         alignment: Bio.Align.MultipleSeqAlignment.
@@ -76,11 +73,9 @@ def column_conservation(alignment, ignore_gap=True):
 
 def find_conserved_columns(alignment, target_aa, min_freq=0.9, min_coverage=0.5):
     """
-    Descriptions:
-        Return MSA columns where target_aa is the dominant residue above the
-        given thresholds. A column passes if at least min_coverage of all
-        sequences have a non-gap residue there AND, among those, target_aa
-        appears at frequency >= min_freq.
+    Description:
+        Return MSA columns where target_aa is the dominant non-gap residue
+        and passes the coverage and frequency thresholds.
 
     Args:
         alignment: Bio.Align.MultipleSeqAlignment.
@@ -108,11 +103,9 @@ def find_conserved_columns(alignment, target_aa, min_freq=0.9, min_coverage=0.5)
 
 def resid_to_col(aligned_seq, resid_1based):
     """
-    Descriptions:
-        Convert a 1-based residue index in the ungapped sequence to its
-        corresponding 0-based MSA column index. Walks the aligned string,
-        counting non-gap characters until the target residue count is
-        reached, then returns that column position.
+    Description:
+        Convert a 1-based ungapped residue index to its 0-based MSA column
+        index.
 
     Args:
         aligned_seq: One aligned sequence string (with '-' as gap).
@@ -137,7 +130,7 @@ def resid_to_col(aligned_seq, resid_1based):
 
 def locate_catalytic_from_reference(alignment, ref_id, catalytic_map):
     """
-    Descriptions:
+    Description:
         Map known catalytic residues (1-based) on a reference sequence to
         MSA columns, with cross-checks. The reference is matched by
         substring containment in record ids.
@@ -188,11 +181,9 @@ def locate_catalytic_from_reference(alignment, ref_id, catalytic_map):
 
 def col_to_resid(aligned_seq, col):
     """
-    Descriptions:
-        Convert an MSA column index to a 0-based residue index in the
-        ungapped sequence. Counts non-gap characters in the prefix
-        aligned_seq[:col+1]; subtracting 1 converts the count to a 0-based
-        index. Returns None if the column is a gap in this sequence.
+    Description:
+        Convert a 0-based MSA column to its 0-based ungapped residue index,
+        or None if the column is a gap in this sequence.
 
     Args:
         aligned_seq: One aligned sequence string (with '-' as gap).
@@ -209,10 +200,9 @@ def col_to_resid(aligned_seq, col):
 
 def locate_residues(alignment, msa_cols, labels=None):
     """
-    Descriptions:
-        For every sequence, report the residue identity and 1-based residue
-        index found at each requested MSA column. Internally builds a dict
-        view of the alignment for direct per-sequence access.
+    Description:
+        For every sequence, report the residue identity and 1-based index at
+        each requested MSA column.
 
     Args:
         alignment: Bio.Align.MultipleSeqAlignment.
@@ -246,7 +236,7 @@ def locate_residues(alignment, msa_cols, labels=None):
 
 def map_catalytic_across_msa(alignment, ref_id, catalytic_map):
     """
-    Descriptions:
+    Description:
         End-to-end shortcut: resolve catalytic columns from a reference
         sequence and report each column's residue and 1-based index for
         every sequence in the MSA.
@@ -276,13 +266,10 @@ def map_catalytic_across_msa(alignment, ref_id, catalytic_map):
 def find_pcp_serine(alignment, min_ser_freq=0.85, motif="GxxS",
                     min_motif_freq=0.5, position_range=None):
     """
-    Descriptions:
-        Locate the alignment column carrying the conserved PCP active-site
-        Ser. The PCP/T domain of CAR sits between the A and R domains and
-        carries a 4'-phosphopantetheine attachment Ser inside a conserved
-        'GxxS' motif (Ser is the last position). The function scans for
-        highly conserved Ser columns whose preceding context matches the
-        motif and returns the strongest hit.
+    Description:
+        Locate the conserved PCP active-site Ser column: the strongest
+        highly-conserved Ser whose preceding context matches the motif
+        (default 'GxxS').
 
     Args:
         alignment: Bio.Align.MultipleSeqAlignment.
@@ -334,13 +321,9 @@ def find_pcp_serine(alignment, min_ser_freq=0.85, motif="GxxS",
 
 def truncate_at_column(alignment, col, include_col=False):
     """
-    Descriptions:
-        Truncate every unaligned sequence to keep its N-terminal portion up
-        to the given MSA column. Uses AlignIO column slicing
-        (alignment[:, :upper]) to express "everything before the anchor" at
-        the alignment level, then strips gaps to recover the unaligned
-        residue sequence. Sequences with a gap at the anchor are still cut
-        at the same alignment-relative location.
+    Description:
+        Truncate each sequence to its N-terminal portion up to the given MSA
+        column, returning gap-stripped unaligned sequences.
 
     Args:
         alignment: Bio.Align.MultipleSeqAlignment.
@@ -358,7 +341,7 @@ def truncate_at_column(alignment, col, include_col=False):
 
 def write_fasta(seqs, out_path, line_width=60):
     """
-    Descriptions:
+    Description:
         Write a {id: sequence} dict to a fasta file, wrapping each sequence
         at line_width characters per line (set <= 0 for single-line output).
 

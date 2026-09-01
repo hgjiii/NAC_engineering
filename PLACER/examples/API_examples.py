@@ -8,7 +8,7 @@ import pandas as pd
 import json
 DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, DIR+"/../")
-import PLACER.PLACER as PLACER
+import PLACER
 
 
 ## Examples of how to perform various prediction tasks using PLACER Python API

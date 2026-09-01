@@ -1,0 +1,36 @@
+{
+    "enzyme_name": "carA_holo_6aca_amp_homologs",
+    "catalytic": {
+        "cat_keys": ["cat_His", "cat_Thr"],
+        "chain_id": "A"
+    },
+    "interaction_pairs": [
+        {
+            "His_NE2": {"chain": "A", "resid": null, "atom": "NE2", "residue_type": "HIS"},
+            "6AC_C4": {"chain": "Z", "ligand": "6AC", "atom": "C4"}
+        },
+        {
+            "His_NE2": {"chain": "A", "resid": null, "atom": "NE2", "residue_type": "HIS"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+        },
+        {
+            "Thr_OG1": {"chain": "A", "resid": null, "atom": "OG1", "residue_type": "THR"},
+            "6AC_C4": {"chain": "Z", "ligand": "6AC", "atom": "C4"}
+        },
+        {
+            "Thr_OG1": {"chain": "A", "resid": null, "atom": "OG1", "residue_type": "THR"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+        },
+        {
+            "6AC_C4": {"chain": "Z", "ligand": "6AC", "atom": "C4"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+        }
+    ],
+    "contact_cutoffs": {
+        "His_NE2-6AC_C4": 5.1,
+        "His_NE2-AMP_PA": 4.7,
+        "Thr_OG1-6AC_C4": 5.2,
+        "Thr_OG1-AMP_PA": 3.9,
+        "6AC_C4-AMP_PA": 4.6
+    }
+}

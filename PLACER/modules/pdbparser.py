@@ -10,8 +10,8 @@ import numpy as np
 from openbabel import openbabel
 
 sys.path.append(os.path.dirname(__file__))
-import PLACER.modules.obutils as obutils
-import PLACER.modules.cifutils as cifutils
+import obutils
+import cifutils
 
 
 class PDBParser:

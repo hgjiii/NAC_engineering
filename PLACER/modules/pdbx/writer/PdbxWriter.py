@@ -18,7 +18,7 @@ __license__   = "Creative Commons Attribution 3.0 Unported"
 __version__   = "V0.01"
 
 
-from PLACER.modules.pdbx.reader.PdbxContainers import *
+from pdbx.reader.PdbxContainers import *
 
 class PdbxError(Exception):
     """ Class for catch general errors 

@@ -1,4 +1,3 @@
-
 ##
 # File:  PdbxReader.py
 # Date:  2012-01-09  Jdw  Adapted from PdbxParser
@@ -25,7 +24,7 @@ Acknowledgements:
 """
 
 import re,sys
-from PLACER.modules.pdbx.reader.PdbxContainers import *
+from pdbx.reader.PdbxContainers import *
 
 class PdbxError(Exception):
     """ Class for catch general errors 

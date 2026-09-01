@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import PLACER.modules.init as init
+import init
 
 try:
     from opt_einsum import contract as einsum

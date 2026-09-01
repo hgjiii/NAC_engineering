@@ -8,10 +8,10 @@ import dgl
 import sys, os
 
 sys.path.append(os.path.dirname(__file__))
-from PLACER.modules.SE3_network import SE3TransformerWrapper
-import PLACER.modules.geometry as geometry
-import PLACER.modules.losses as losses
-from PLACER.modules.attention import PairStr2Pair,FeedForwardLayer
+from SE3_network import SE3TransformerWrapper
+import geometry
+import losses
+from attention import PairStr2Pair,FeedForwardLayer
 
 
 # ============================================================

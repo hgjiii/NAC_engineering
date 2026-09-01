@@ -42,12 +42,15 @@ def process_entry(pdb_path, csv_path, apo_pdb_path, apo_csv_path, cat_entry, cfg
         csv_path: Path to the matching PLACER info CSV (pRMSD).
         apo_pdb_path: Path to the apo PLACER PDB, or None to skip apo.
         apo_csv_path: Path to the apo info CSV, or None to skip apo.
-        cat_entry: Per-entry catalytic mapping dict.
+        cat_entry: Per-entry catalytic mapping dict, or None to use the resids
+            written explicitly in the config's interaction_pairs.
         cfg: Loaded enzyme config dict.
         params: Dict of algorithm parameters.
 
     Returns:
-        Result dict for this entry, or None if the entry is skipped.
+        Result dict for this entry. Raises if the entry cannot be analysed
+        (e.g. a config resid that is absent from the model or holds a residue
+        of a different type); the caller reports and skips it.
     """
     models = structure.load_models_from_pdb(pdb_path)
     prmsd_list = structure.load_prmsd(csv_path)
@@ -65,12 +68,10 @@ def process_entry(pdb_path, csv_path, apo_pdb_path, apo_csv_path, cat_entry, cfg
 
     # Catalytic residues -> fill interaction pair template
     key_res_cat = build_catalytic_key_res(models[0], cat_entry, cfg["catalytic"]["cat_keys"],
-                                          cfg["catalytic"]["chain_id"])
+                                          cfg["catalytic"]["chain_id"],
+                                          interaction_pairs=cfg["interaction_pairs"])
     resname_to_resid = {kr["resname"]: kr["resid"] for kr in key_res_cat}
-    try:
-        pairs = fill_interaction_pairs(cfg["interaction_pairs"], resname_to_resid)
-    except KeyError:
-        return None   # missing catalytic residue
+    pairs = fill_interaction_pairs(cfg["interaction_pairs"], resname_to_resid)
 
     # Atom-atom distances -> NAC computation
     pair_distances = compute_pair_distances(models, pairs, sym_pairs=cfg["symmetry_pairs"])
@@ -123,9 +124,11 @@ def main():
     parser.add_argument("--holo_dir", required=True, help="Directory of PLACER holo PDBs.")
     parser.add_argument("--apo_dir", default=None, help="Directory of PLACER apo PDBs.")
 
-    parser.add_argument("--catres", required=True, help="Catalytic residue mapping pickle.")
     parser.add_argument("--config", required=True, help="Enzyme config JSON.")
     parser.add_argument("--output", required=True, help="Output CSV path.")
+    parser.add_argument("--catres", default=None,
+                        help="Catalytic residue mapping pickle. Only needed when the "
+                             "config leaves any interaction_pairs resid as null.")
 
     parser.add_argument("--cutoff_close", type=float, default=5.0)
     parser.add_argument("--cutoff_orient", type=float, default=6.0)
@@ -140,9 +143,18 @@ def main():
     args = parser.parse_args()
 
     cfg = load_config(args.config)
-    with open(args.catres, "rb") as f:
-        cat_mapping = pickle.load(f)
-    lookup = {member: key for key in cat_mapping for member in key.split(";")}
+
+    # Resids given explicitly in the config need no mapping; nulls do
+    cat_mapping, lookup = None, None
+    if args.catres is not None:
+        with open(args.catres, "rb") as f:
+            cat_mapping = pickle.load(f)
+        lookup = {member: key for key in cat_mapping for member in key.split(";")}
+    elif any(spec.get("resid") is None
+             for pair in cfg["interaction_pairs"] for spec in pair.values()
+             if "ligand" not in spec):
+        parser.error("--catres is required: the config leaves interaction_pairs "
+                     "resids as null. Write the resids explicitly to run without it.")
 
     params = {
         "cutoff_close": args.cutoff_close,
@@ -165,28 +177,36 @@ def main():
             apo_pdb_path = os.path.join(args.apo_dir, file)
             apo_csv_path = os.path.join(args.apo_dir, os.path.splitext(file)[0].replace("_model", "") + ".csv")
 
-        if entry not in lookup:
-            continue
-        cat_entry = cat_mapping[lookup[entry]]
+        cat_entry = None
+        if lookup is not None:
+            if entry not in lookup:
+                continue
+            cat_entry = cat_mapping[lookup[entry]]
 
-        result = process_entry(pdb_path, csv_path, apo_pdb_path, apo_csv_path, cat_entry, cfg, params)
-        if result is None:
-            continue
+        # Any entry-level problem (bad resid, wrong residue type, missing atom,
+        # unreadable model) is reported and left blank instead of aborting the run
+        try:
+            result = process_entry(pdb_path, csv_path, apo_pdb_path, apo_csv_path,
+                                   cat_entry, cfg, params)
+        except Exception as exc:
+            tqdm.write(f"[skip] {file}: {type(exc).__name__}: {exc}")
+            result = {}
 
         result["entry"] = entry
         all_results[entry] = result
 
-    # Write scalar columns to CSV
-    df = pd.DataFrame.from_dict(all_results, orient="index")
+    # Write scalar columns to CSV; skipped entries keep a blank row
+    df = pd.DataFrame.from_dict(all_results, orient="index").reindex(columns=OUTPUT_COLUMNS)
 
 
     def to_1based_str(idxs):
-        if idxs is None:
+        if not isinstance(idxs, (list, tuple)):
             return None
         return ";".join(str(i + 1) for i in idxs)
 
     df["nac_holo_idxs"] = df["nac_holo_idxs"].apply(to_1based_str)
     df["nac_apo_idxs"] = df["nac_apo_idxs"].apply(to_1based_str)
+    df = df.convert_dtypes()   # keep counts integral even with blank rows present
 
     # Confidence filter: holo always; apo only when apo_dir given
     if args.min_conf > 0:

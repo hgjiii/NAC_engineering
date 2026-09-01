@@ -25,7 +25,7 @@ except: from sets import Set as set
 
 # Magic spell to make sure Rosetta python libs are on the PYTHONPATH:
 # sys.path.append( os.path.dirname(os.path.dirname( os.path.abspath(sys.path[0]) )) )
-sys.path.append("/home/hgji/anaconda3/mbel/tools/PyRosetta/rosetta/source/scripts/python/public")
+sys.path.append("/home/root01/data2/hgji/anaconda3/mbel/tools/PyRosetta/rosetta/source/scripts/python/public")
 
 from rosetta_py.io.mdl_molfile import *
 from rosetta_py.utility.rankorder import argmin, order

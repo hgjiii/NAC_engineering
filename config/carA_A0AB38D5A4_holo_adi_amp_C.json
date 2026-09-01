@@ -1,0 +1,56 @@
+{
+    "enzyme_name": "carA_A0AB38D5A4_holo_adi_amp_C",
+    "catalytic": {
+        "cat_keys": ["cat_His", "cat_Thr"],
+        "chain_id": "A"
+    },
+    "interaction_pairs": [
+        {
+            "His_NE2": {"chain": "A", "resid": 301, "atom": "NE2", "residue_type": "HIS"},
+            "ADI_C6": {"chain": "Z", "ligand": "ADI", "atom": "C6"}
+        },
+        {
+            "His_NE2": {"chain": "A", "resid": 301, "atom": "NE2", "residue_type": "HIS"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+        },
+        {
+            "Thr_OG1": {"chain": "A", "resid": 422, "atom": "OG1", "residue_type": "THR"},
+            "ADI_C6": {"chain": "Z", "ligand": "ADI", "atom": "C6"}
+        },
+        {
+            "Thr_OG1": {"chain": "A", "resid": 422, "atom": "OG1", "residue_type": "THR"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+        },
+        {
+            "Lys_NZ": {"chain": "A", "resid": 618, "atom": "NZ", "residue_type": "LYS"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+        },
+        {
+            "Lys_NZ": {"chain": "A", "resid": 618, "atom": "NZ", "residue_type": "LYS"},
+            "AMP_O4": {"chain": "Y", "ligand": "AMP", "atom": "O4'"}
+        },
+        {
+            "Lys_NZ": {"chain": "A", "resid": 618, "atom": "NZ", "residue_type": "LYS"},
+            "ADI_C6": {"chain": "Z", "ligand": "ADI", "atom": "C6"}
+        },
+        {
+            "ADI_C6": {"chain": "Z", "ligand": "ADI", "atom": "C6"},
+            "AMP_PA": {"chain": "Y", "ligand": "AMP", "atom": "P"}
+        }
+    ],
+    "contact_cutoffs": {
+        "His_NE2-ADI_C6": 5.1,
+        "His_NE2-AMP_PA": 4.7,
+        "Thr_OG1-ADI_C6": 5.2,
+        "Thr_OG1-AMP_PA": 3.9,
+        "Lys_NZ-AMP_PA": 5.0,
+        "Lys_NZ-AMP_O4": 3.5,
+        "Lys_NZ-ADI_C6": 6.4,
+        "ADI_C6-AMP_PA": 4.6
+    },
+    "symmetry_pairs": {
+        "ADI": [
+            ["C6", "C4"]
+        ]
+    }
+}
