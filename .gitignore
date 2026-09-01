@@ -6,6 +6,11 @@ inputs/
 outputs/
 homologs/structures
 
+# Structure data (large PDB/MODELLER outputs)
+homologs/structure_afdb/
+homologs/structure_modeller/
+modeller/structure/
+
 # Generated analysis notebooks (keep analysis_homologs.ipynb)
 analysis_docking_results_*.ipynb
 analysis_homologs_*.ipynb
