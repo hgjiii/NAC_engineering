@@ -10,6 +10,37 @@ from pyrosetta.rosetta.core.kinematics import MoveMap
 from pyrosetta.rosetta.protocols.relax import FastRelax
 from pyrosetta.rosetta.protocols import docking, rigid
 
+def build_init_options(args):
+    """Assemble the pyrosetta.init() flags from the parsed arguments.
+
+    Patches have to be handed to Rosetta at init time: the pose-level route
+    load_ligand_params_to_pose() uses reads base residue types only, so a
+    patch passed that way is silently ignored.
+
+    Args:
+        args: Parsed command line.
+
+    Return:
+        Flag string for pyrosetta.init(extra_options=...).
+
+    Raise:
+        SystemExit if a named patch file does not exist, which Rosetta would
+        otherwise skip quietly and only fail on much later.
+    """
+    flags = []
+
+    if args.patches:
+        missing = [p for p in args.patches if not os.path.isfile(p)]
+        if missing:
+            raise SystemExit(f"Patch file(s) not found: {missing}")
+        flags.append("-extra_patch_fa " + " ".join(args.patches))
+
+    if args.load_PDB_components is not None:
+        flags.append(f"-load_PDB_components {args.load_PDB_components}")
+
+    return " ".join(flags)
+
+
 def load_ligand_params_to_pose(params, pose):
     """Attach ligand params to a pose's residue type set.
 
@@ -203,7 +234,17 @@ def main():
     parser.add_argument("-o", "--output_dir", type=str, required=True,
                         help="Directory to write relaxed PDB files.")
     parser.add_argument("-pr", "--params", type=str, default=None, nargs="+",
-                        help="Ligand path(s) in format 'LIG:path/to/ligand.mol2' (optional, multiple allowed)")
+                        help="Ligand params file path(s) (optional, multiple allowed).")
+    parser.add_argument("-pc", "--patches", type=str, default=None, nargs="+",
+                        help="Rosetta patch file(s) defining modified residues "
+                             "(optional, multiple allowed).")
+    parser.add_argument("-lc", "--load_PDB_components", type=str, default=None,
+                        choices=["true", "false"],
+                        help="Rosetta's -load_PDB_components. Leave unset to "
+                             "keep Rosetta's default (true). Set false so an "
+                             "unrecognised residue name fails loudly instead "
+                             "of being replaced from the PDB component "
+                             "dictionary.")
     parser.add_argument("-cm", "--compute_metrics", action="store_true", default=False,
                         help="If set, compute pre/post-relax energies and "
                              "docking energies (requires --partners), and write TSV.")
@@ -220,7 +261,7 @@ def main():
     if args.run_docking and args.partners is None:
         parser.error("--run_docking requires --partners (e.g. 'A_X').")
 
-    pyrosetta.init()
+    pyrosetta.init(extra_options=build_init_options(args))
     os.makedirs(args.output_dir, exist_ok=True)
 
     pdb_files = sorted([
